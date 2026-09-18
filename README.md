@@ -32,7 +32,7 @@ SistemaVentas/
 
 ```bash
 git clone <URL_DEL_REPOSITORIO>
-cd SistemaVentas
+cd Prueba-tecnica-HKA/SistemaVentas
 ```
 
 ### 2. Levantar el backend
