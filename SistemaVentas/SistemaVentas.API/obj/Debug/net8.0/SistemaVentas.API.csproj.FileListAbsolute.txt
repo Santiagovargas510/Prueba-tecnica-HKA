@@ -267,3 +267,4 @@ C:\Prueba-tecnica-HKA\SistemaVentas\SistemaVentas.API\obj\Debug\net8.0\refint\Si
 C:\Prueba-tecnica-HKA\SistemaVentas\SistemaVentas.API\obj\Debug\net8.0\SistemaVentas.API.pdb
 C:\Prueba-tecnica-HKA\SistemaVentas\SistemaVentas.API\obj\Debug\net8.0\SistemaVentas.API.genruntimeconfig.cache
 C:\Prueba-tecnica-HKA\SistemaVentas\SistemaVentas.API\obj\Debug\net8.0\ref\SistemaVentas.API.dll
+C:\Prueba-tecnica-HKA\SistemaVentas\SistemaVentas.API\bin\Debug\net8.0\SistemaVentas.API.staticwebassets.runtime.json

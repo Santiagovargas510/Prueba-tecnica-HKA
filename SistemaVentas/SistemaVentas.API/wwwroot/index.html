@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sistema de Ventas</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      color: #1e293b;
+    }
+
+    header {
+      background: #1B2A4A;
+      color: white;
+      padding: 18px 32px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    nav {
+      display: flex;
+      gap: 8px;
+      padding: 16px 32px;
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    nav button {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      background: #e2e8f0;
+      color: #1e293b;
+      transition: all 0.2s;
+    }
+
+    nav button.active, nav button:hover {
+      background: #1B2A4A;
+      color: white;
+    }
+
+    .container { padding: 32px; max-width: 1100px; margin: 0 auto; }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #1B2A4A;
+      border-left: 4px solid #2563EB;
+      padding-left: 10px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    input:focus, select:focus { border-color: #2563EB; }
+
+    .btn {
+      padding: 9px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: #2563EB; color: white; }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-success { background: #16a34a; color: white; }
+    .btn-sm { padding: 5px 12px; font-size: 0.8rem; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: #f8fafc;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #475569;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    tr:hover td { background: #f8fafc; }
+
+    .badge {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .badge-green { background: #dcfce7; color: #16a34a; }
+    .badge-blue { background: #dbeafe; color: #2563EB; }
+
+    .alert {
+      padding: 10px 16px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .alert-error { background: #fee2e2; color: #b91c1c; }
+    .alert-success { background: #dcfce7; color: #15803d; }
+
+    .detalle-row {
+      display: grid;
+      grid-template-columns: 1fr 100px auto;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .total-box {
+      text-align: right;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1B2A4A;
+      margin-top: 12px;
+    }
+
+    .empty { text-align: center; color: #94a3b8; padding: 32px; }
+  </style>
+</head>
+<body>
+
+<header>🧾 Sistema de Ventas</header>
+
+<nav>
+  <button class="active" onclick="mostrarSeccion('clientes')">Clientes</button>
+  <button onclick="mostrarSeccion('productos')">Productos</button>
+  <button onclick="mostrarSeccion('ventas')">Nueva Venta</button>
+  <button onclick="mostrarSeccion('facturas')">Facturas</button>
+</nav>
+
+<div class="container">
+
+  <!-- CLIENTES -->
+  <div id="clientes" class="section active">
+    <div class="card">
+      <h2>Nuevo Cliente</h2>
+      <div id="alertCliente" class="alert"></div>
+      <div class="form-grid">
+        <input id="cNombre" placeholder="Nombre completo" />
+        <input id="cEmail" placeholder="Email" />
+        <input id="cTelefono" placeholder="Teléfono" />
+      </div>
+      <button class="btn btn-primary" onclick="crearCliente()">Agregar Cliente</button>
+    </div>
+    <div class="card">
+      <h2>Clientes Registrados</h2>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Acción</th></tr>
+        </thead>
+        <tbody id="tablaClientes"><tr><td colspan="5" class="empty">Cargando...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PRODUCTOS -->
+  <div id="productos" class="section">
+    <div class="card">
+      <h2>Nuevo Producto</h2>
+      <div id="alertProducto" class="alert"></div>
+      <div class="form-grid">
+        <input id="pNombre" placeholder="Nombre del producto" />
+        <input id="pDescripcion" placeholder="Descripción" />
+        <input id="pPrecio" placeholder="Precio" type="number" />
+        <input id="pStock" placeholder="Stock inicial" type="number" />
+      </div>
+      <button class="btn btn-primary" onclick="crearProducto()">Agregar Producto</button>
+    </div>
+    <div class="card">
+      <h2>Productos Disponibles</h2>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Stock</th><th>Acción</th></tr>
+        </thead>
+        <tbody id="tablaProductos"><tr><td colspan="6" class="empty">Cargando...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- NUEVA VENTA -->
+  <div id="ventas" class="section">
+    <div class="card">
+      <h2>Crear Factura de Venta</h2>
+      <div id="alertVenta" class="alert"></div>
+      <div class="form-grid" style="margin-bottom:20px">
+        <div>
+          <label style="font-size:0.85rem;color:#475569;margin-bottom:4px;display:block">Cliente</label>
+          <select id="vCliente"><option value="">Seleccione un cliente...</option></select>
+        </div>
+      </div>
+      <h2 style="margin-bottom:12px">Productos</h2>
+      <div id="detallesVenta"></div>
+      <button class="btn btn-success btn-sm" onclick="agregarDetalleVenta()" style="margin-bottom:16px">+ Agregar producto</button>
+      <div class="total-box" id="totalVenta">Total: $0</div>
+      <br/>
+      <button class="btn btn-primary" onclick="crearFactura()">Registrar Venta</button>
+    </div>
+  </div>
+
+  <!-- FACTURAS -->
+  <div id="facturas" class="section">
+    <div class="card">
+      <h2>Historial de Facturas</h2>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Estado</th><th>Detalle</th></tr>
+        </thead>
+        <tbody id="tablaFacturas"><tr><td colspan="6" class="empty">Cargando...</td></tr></tbody>
+      </table>
+    </div>
+    <div class="card" id="detalleFacturaBox" style="display:none">
+      <h2>Detalle de Factura</h2>
+      <div id="detalleFacturaContenido"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const API = 'http://localhost:5282/api';
+  let productosCache = [];
+  let clientesCache = [];
+
+  // ── NAVEGACIÓN ──────────────────────────────────────────────
+  function mostrarSeccion(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+    if (id === 'clientes') cargarClientes();
+    if (id === 'productos') cargarProductos();
+    if (id === 'ventas') cargarDatosVenta();
+    if (id === 'facturas') cargarFacturas();
+  }
+
+  // ── ALERTAS ─────────────────────────────────────────────────
+  function mostrarAlerta(id, mensaje, tipo) {
+    const el = document.getElementById(id);
+    el.textContent = mensaje;
+    el.className = `alert alert-${tipo}`;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 4000);
+  }
+
+  // ── CLIENTES ────────────────────────────────────────────────
+  async function cargarClientes() {
+    const res = await fetch(`${API}/Clientes`);
+    clientesCache = await res.json();
+    const tbody = document.getElementById('tablaClientes');
+    if (!clientesCache.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty">No hay clientes registrados.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = clientesCache.map(c => `
+      <tr>
+        <td>${c.id}</td>
+        <td>${c.nombre}</td>
+        <td>${c.email}</td>
+        <td>${c.telefono}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="eliminarCliente(${c.id})">Eliminar</button></td>
+      </tr>`).join('');
+  }
+
+  async function crearCliente() {
+    const nombre = document.getElementById('cNombre').value.trim();
+    const email = document.getElementById('cEmail').value.trim();
+    const telefono = document.getElementById('cTelefono').value.trim();
+    if (!nombre || !email) return mostrarAlerta('alertCliente', 'Nombre y email son obligatorios.', 'error');
+    const res = await fetch(`${API}/Clientes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre, email, telefono })
+    });
+    if (res.ok) {
+      mostrarAlerta('alertCliente', 'Cliente creado correctamente.', 'success');
+      document.getElementById('cNombre').value = '';
+      document.getElementById('cEmail').value = '';
+      document.getElementById('cTelefono').value = '';
+      cargarClientes();
+    } else {
+      const err = await res.json();
+      mostrarAlerta('alertCliente', err.mensaje, 'error');
+    }
+  }
+
+  async function eliminarCliente(id) {
+    if (!confirm('¿Eliminar este cliente?')) return;
+    await fetch(`${API}/Clientes/${id}`, { method: 'DELETE' });
+    cargarClientes();
+  }
+
+  // ── PRODUCTOS ───────────────────────────────────────────────
+  async function cargarProductos() {
+    const res = await fetch(`${API}/Productos`);
+    productosCache = await res.json();
+    const tbody = document.getElementById('tablaProductos');
+    if (!productosCache.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty">No hay productos registrados.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = productosCache.map(p => `
+      <tr>
+        <td>${p.id}</td>
+        <td>${p.nombre}</td>
+        <td>${p.descripcion}</td>
+        <td>$${p.precio.toLocaleString('es-CO')}</td>
+        <td><span class="badge ${p.stock > 5 ? 'badge-green' : 'badge-blue'}">${p.stock}</span></td>
+        <td><button class="btn btn-danger btn-sm" onclick="eliminarProducto(${p.id})">Eliminar</button></td>
+      </tr>`).join('');
+  }
+
+  async function crearProducto() {
+    const nombre = document.getElementById('pNombre').value.trim();
+    const descripcion = document.getElementById('pDescripcion').value.trim();
+    const precio = parseFloat(document.getElementById('pPrecio').value);
+    const stock = parseInt(document.getElementById('pStock').value);
+    if (!nombre || isNaN(precio) || isNaN(stock))
+      return mostrarAlerta('alertProducto', 'Todos los campos son obligatorios.', 'error');
+    if (precio <= 0) return mostrarAlerta('alertProducto', 'El precio debe ser mayor a cero.', 'error');
+    if (stock < 0) return mostrarAlerta('alertProducto', 'El stock no puede ser negativo.', 'error');
+    const res = await fetch(`${API}/Productos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre, descripcion, precio, stock })
+    });
+    if (res.ok) {
+      mostrarAlerta('alertProducto', 'Producto creado correctamente.', 'success');
+      ['pNombre','pDescripcion','pPrecio','pStock'].forEach(id => document.getElementById(id).value = '');
+      cargarProductos();
+    } else {
+      const err = await res.json();
+      mostrarAlerta('alertProducto', err.mensaje, 'error');
+    }
+  }
+
+  async function eliminarProducto(id) {
+    if (!confirm('¿Eliminar este producto?')) return;
+    await fetch(`${API}/Productos/${id}`, { method: 'DELETE' });
+    cargarProductos();
+  }
+
+  // ── NUEVA VENTA ─────────────────────────────────────────────
+  async function cargarDatosVenta() {
+    const [rc, rp] = await Promise.all([fetch(`${API}/Clientes`), fetch(`${API}/Productos`)]);
+    clientesCache = await rc.json();
+    productosCache = await rp.json();
+    const sel = document.getElementById('vCliente');
+    sel.innerHTML = '<option value="">Seleccione un cliente...</option>' +
+      clientesCache.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+    document.getElementById('detallesVenta').innerHTML = '';
+    agregarDetalleVenta();
+    calcularTotal();
+  }
+
+  function agregarDetalleVenta() {
+    const div = document.createElement('div');
+    div.className = 'detalle-row';
+    div.innerHTML = `
+      <select onchange="calcularTotal()">
+        <option value="">Seleccione producto...</option>
+        ${productosCache.map(p => `<option value="${p.id}" data-precio="${p.precio}">${p.nombre} — $${p.precio.toLocaleString('es-CO')} (Stock: ${p.stock})</option>`).join('')}
+      </select>
+      <input type="number" min="1" value="1" placeholder="Cant." onchange="calcularTotal()" />
+      <button class="btn btn-danger btn-sm" onclick="this.parentElement.remove(); calcularTotal()">✕</button>`;
+    document.getElementById('detallesVenta').appendChild(div);
+  }
+
+  function calcularTotal() {
+    let total = 0;
+    document.querySelectorAll('#detallesVenta .detalle-row').forEach(row => {
+      const sel = row.querySelector('select');
+      const opt = sel.options[sel.selectedIndex];
+      const precio = parseFloat(opt?.dataset?.precio || 0);
+      const cantidad = parseInt(row.querySelector('input').value || 0);
+      total += precio * cantidad;
+    });
+    document.getElementById('totalVenta').textContent = `Total: $${total.toLocaleString('es-CO')}`;
+  }
+
+  async function crearFactura() {
+    const clienteId = parseInt(document.getElementById('vCliente').value);
+    if (!clienteId) return mostrarAlerta('alertVenta', 'Seleccione un cliente.', 'error');
+    const detalles = [];
+    let valido = true;
+    document.querySelectorAll('#detallesVenta .detalle-row').forEach(row => {
+      const productoId = parseInt(row.querySelector('select').value);
+      const cantidad = parseInt(row.querySelector('input').value);
+      if (!productoId || cantidad < 1) { valido = false; return; }
+      detalles.push({ productoId, cantidad });
+    });
+    if (!valido || !detalles.length)
+      return mostrarAlerta('alertVenta', 'Seleccione al menos un producto con cantidad válida.', 'error');
+    const res = await fetch(`${API}/Facturas`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clienteId, detalles })
+    });
+    if (res.ok) {
+      const factura = await res.json();
+      mostrarAlerta('alertVenta', `✅ Venta registrada. Factura #${factura.id} — Total: $${factura.total.toLocaleString('es-CO')}`, 'success');
+      cargarDatosVenta();
+    } else {
+      const err = await res.json();
+      mostrarAlerta('alertVenta', err.mensaje, 'error');
+    }
+  }
+
+  // ── FACTURAS ─────────────────────────────────────────────────
+  async function cargarFacturas() {
+    const res = await fetch(`${API}/Facturas`);
+    const facturas = await res.json();
+    const tbody = document.getElementById('tablaFacturas');
+    if (!facturas.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty">No hay facturas registradas.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = facturas.map(f => `
+      <tr>
+        <td>#${f.id}</td>
+        <td>${f.clienteNombre}</td>
+        <td>${new Date(f.fecha).toLocaleDateString('es-CO')}</td>
+        <td>$${f.total.toLocaleString('es-CO')}</td>
+        <td><span class="badge badge-green">${f.estado}</span></td>
+        <td><button class="btn btn-primary btn-sm" onclick="verDetalle(${f.id})">Ver</button></td>
+      </tr>`).join('');
+  }
+
+  async function verDetalle(id) {
+    const res = await fetch(`${API}/Facturas/${id}`);
+    const f = await res.json();
+    const box = document.getElementById('detalleFacturaBox');
+    const contenido = document.getElementById('detalleFacturaContenido');
+    contenido.innerHTML = `
+      <p style="margin-bottom:8px"><strong>Factura #${f.id}</strong> — ${f.clienteNombre} — ${new Date(f.fecha).toLocaleDateString('es-CO')}</p>
+      <table>
+        <thead><tr><th>Producto</th><th>Cantidad</th><th>Precio Unit.</th><th>Subtotal</th></tr></thead>
+        <tbody>
+          ${f.detalles.map(d => `
+            <tr>
+              <td>${d.productoNombre}</td>
+              <td>${d.cantidad}</td>
+              <td>$${d.precioUnitario.toLocaleString('es-CO')}</td>
+              <td>$${d.subtotal.toLocaleString('es-CO')}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+      <div class="total-box" style="margin-top:12px">Total: $${f.total.toLocaleString('es-CO')}</div>`;
+    box.style.display = 'block';
+    box.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── INIT ─────────────────────────────────────────────────────
+  cargarClientes();
+</script>
+</body>
+</html>

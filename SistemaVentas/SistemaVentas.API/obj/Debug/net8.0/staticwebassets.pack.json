@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Prueba-tecnica-HKA\\SistemaVentas\\SistemaVentas.API\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.SistemaVentas.API.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.SistemaVentas.API.props",
+      "PackagePath": "build\\SistemaVentas.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.SistemaVentas.API.props",
+      "PackagePath": "buildMultiTargeting\\SistemaVentas.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.SistemaVentas.API.props",
+      "PackagePath": "buildTransitive\\SistemaVentas.API.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
